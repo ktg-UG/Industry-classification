@@ -56,7 +56,7 @@ def main():
     #パイプラインの作成
     pipe = Pipeline([
         ('tfidf', TfidfVectorizer(max_features=1000)),
-        ('clf', LinearSVC())
+        ('clf', KNeighborsClassifier())
     ])
 
     #モデルの学習
