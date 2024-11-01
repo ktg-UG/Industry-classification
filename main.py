@@ -1,8 +1,6 @@
 #industry-classification
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.metrics import accuracy_score, classification_report
-from sklearn.pipeline import Pipeline
+from sklearn.metrics import accuracy_score
 from janome.tokenizer import Tokenizer
 import sys
 
@@ -12,15 +10,17 @@ from sklearn.linear_model import LogisticRegression
 tokenizer = Tokenizer()
 
 def tokenize(text):
-    print(f"トークン化中: {text[:20]}...")
     tokens = tokenizer.tokenize(text)
-    print("トークン化完了")
-    return [token.base_form for token in tokens if token.part_of_speech.startswith('名詞')]
+    noun_tokens = []
+    for token in tokens:
+        if token.part_of_speech.startswith('名詞'):
+            noun_tokens.append(token.base_form)
+    return noun_tokens
 
 
 def main():
-    tokenized_learning_data_path = r"C:\Users\ktg27\intern\task3\Industry-classification\tokenized_data\tokenized_learning_data.csv"
-    validation_data_path = r"C:\Users\ktg27\intern\task3\Industry-classification\tokenized_data\tokenized_test_data.csv"
+    tokenized_learning_data_path = r"C:\Users\ktg27\intern\Industry-classification\tokenized_data\tokenized_learning_data.csv"
+    validation_data_path = r"C:\Users\ktg27\intern\Industry-classification\tokenized_data\tokenized_test_data.csv"
     tokenized_learning_data = pd.read_csv(tokenized_learning_data_path)
     validation_data = pd.read_csv(validation_data_path)
 
@@ -37,35 +37,47 @@ def main():
     x_test = validation_data['tokenized_text']
     y_test = validation_data['業界']
 
-    #パイプラインの作成
-    pipe = Pipeline([
-        ('tfidf', TfidfVectorizer(max_features=1000)),
-        ('clf', LogisticRegression())
-    ])
-
-    #モデルの学習
-    print("\nモデルを学習中...")
-    pipe.fit(x_train, y_train)
-
-    #検証データでの予測
-    print("検証データで予測...")
-    y_pred = pipe.predict(x_test)
-
-    #精度の評価
-    accuracy = accuracy_score(y_test, y_pred)
-    print(f"\nモデルの正答率: {accuracy * 100:.2f}%")
-
+    #テキストのパラメータ化
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    vectorizer = TfidfVectorizer()
+    vectorizer.fit(x_train)
+    x_train_parameterized = vectorizer.transform(x_train)
+    #print(x_train_parameterized)
     
+    #業界を数値化
+    from sklearn.preprocessing import LabelEncoder
+    encoder = LabelEncoder()
+    encoder.fit(y_train)
+    y_train_encodered = encoder.transform(y_train)
+
+    #モデルの作成
+    Lr = LogisticRegression()
+    Lr.fit(x_train_parameterized,y_train_encodered)
+
+    #testデータに対しても行う
+    x_test_parameterized = vectorizer.transform(x_test)
+    y_test_encodered = encoder.transform(y_test)
+
+    y_predict = Lr.predict(x_test_parameterized)
+    accuracy = accuracy_score(y_test_encodered, y_predict)
+    #print("Accuracy:", accuracy)
+
+    import numpy as np
+
     #コマンドラインからの入力を受ける
     while True:
-        user_input = input("\n企業の概要文を入力してください(終了するには'exit'と入力) : ")
-        if user_input.lower() == 'exit':
+        x_input = input("\n企業の概要文を入力してください(終了するには'exit'と入力) : ")
+        if x_input.lower() == 'exit':
             print("プログラムを終了します")
             break
 
-        tokenized_input = ' '.join(tokenize(user_input))  # トークン化してスペースで連結
-        prediction = pipe.predict([tokenized_input])[0]
-        print(f"推定される業界 : {prediction}")
+        x_input_tokenized = tokenize(x_input)
+        x_input_reshped = [" ".join(x_input_tokenized)]
+        x_input_parameterized = vectorizer.transform(x_input_reshped)
+        #print(x_input_parameterized)
+        y_output_encodered = Lr.predict(x_input_parameterized)
+        y_output = encoder.inverse_transform(y_output_encodered)
+        print(f"推定される業界 : {y_output[0]}")
 
 if __name__ == "__main__":
     main()
