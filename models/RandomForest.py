@@ -1,10 +1,10 @@
-#ランダムフォレスト 0.916
+#ランダムフォレスト 0.924
 from sklearn.ensemble import RandomForestClassifier
 
 def main():
     #データの読み込み
     import pandas as pd
-    tokenized_learning_data_path = r"C:\Users\ktg27\intern\Industry-classification\tokenized_data\tokenized_learning_data.csv"
+    tokenized_learning_data_path = r"C:\Users\ktg27\intern\Industry-classification\tokenized_data\tokenized_train_data.csv"
     validation_data_path = r"C:\Users\ktg27\intern\Industry-classification\tokenized_data\tokenized_test_data.csv"
     tokenized_learning_data = pd.read_csv(tokenized_learning_data_path)
     validation_data = pd.read_csv(validation_data_path)

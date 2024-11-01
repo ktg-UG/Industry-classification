@@ -14,7 +14,7 @@ def tokenize(text):
     return noun_tokens
 
 # 学習用データの読み込み
-test_data_path = r"C:\Users\ktg27\intern\Industry-classification\data\bootcamp課題３＿各種データ - 検証用データ.csv"
+test_data_path = r"C:\Users\ktg27\intern\Industry-classification\data\test_data.csv"
 test_data = pd.read_csv(test_data_path)
 
 # 学習データの概要文をトークン化して新しい列として追加
