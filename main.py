@@ -1,15 +1,11 @@
 #industry-classification
-import pandas as pd
-from sklearn.metrics import accuracy_score
+
+#サポートベクターマシーン
+from sklearn.svm import LinearSVC
+
 from janome.tokenizer import Tokenizer
-import sys
-
-#ロジスティック回帰
-from sklearn.linear_model import LogisticRegression
-
-tokenizer = Tokenizer()
-
 def tokenize(text):
+    tokenizer = Tokenizer()
     tokens = tokenizer.tokenize(text)
     noun_tokens = []
     for token in tokens:
@@ -19,16 +15,12 @@ def tokenize(text):
 
 
 def main():
+    #データの読み込み
+    import pandas as pd
     tokenized_learning_data_path = r"C:\Users\ktg27\intern\Industry-classification\tokenized_data\tokenized_learning_data.csv"
     validation_data_path = r"C:\Users\ktg27\intern\Industry-classification\tokenized_data\tokenized_test_data.csv"
     tokenized_learning_data = pd.read_csv(tokenized_learning_data_path)
     validation_data = pd.read_csv(validation_data_path)
-
-    #データの確認
-    #print("学習用データのサンプル:")
-    #print(learning_data.head())
-    #print("\n検証用データのサンプル:")
-    #print(validation_data.head())
 
     #特徴量とラベルに分割
     x_train = tokenized_learning_data['tokenized_text']
@@ -51,18 +43,17 @@ def main():
     y_train_encodered = encoder.transform(y_train)
 
     #モデルの作成
-    Lr = LogisticRegression()
-    Lr.fit(x_train_parameterized,y_train_encodered)
+    svc = LinearSVC()
+    svc.fit(x_train_parameterized,y_train_encodered)
 
     #testデータに対しても行う
     x_test_parameterized = vectorizer.transform(x_test)
     y_test_encodered = encoder.transform(y_test)
 
-    y_predict = Lr.predict(x_test_parameterized)
+    y_predict = svc.predict(x_test_parameterized)
+    from sklearn.metrics import accuracy_score
     accuracy = accuracy_score(y_test_encodered, y_predict)
     #print("Accuracy:", accuracy)
-
-    import numpy as np
 
     #コマンドラインからの入力を受ける
     while True:
@@ -75,7 +66,7 @@ def main():
         x_input_reshped = [" ".join(x_input_tokenized)]
         x_input_parameterized = vectorizer.transform(x_input_reshped)
         #print(x_input_parameterized)
-        y_output_encodered = Lr.predict(x_input_parameterized)
+        y_output_encodered = svc.predict(x_input_parameterized)
         y_output = encoder.inverse_transform(y_output_encodered)
         print(f"推定される業界 : {y_output[0]}")
 
