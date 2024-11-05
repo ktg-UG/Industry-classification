@@ -15,7 +15,7 @@ def main():
 
     x_test = validation_data['tokenized_text']
     y_test = validation_data['業界']
-
+    
     #テキストのパラメータ化
     from sklearn.feature_extraction.text import TfidfVectorizer
     vectorizer = TfidfVectorizer()

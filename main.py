@@ -3,6 +3,7 @@
 #サポートベクターマシーン
 from sklearn.svm import LinearSVC
 
+#入力した分のトークン化
 from janome.tokenizer import Tokenizer
 def tokenize(text):
     tokenizer = Tokenizer()
@@ -22,7 +23,7 @@ def main():
     tokenized_learning_data = pd.read_csv(tokenized_learning_data_path)
     validation_data = pd.read_csv(validation_data_path)
 
-    #特徴量とラベルに分割
+    #分割
     x_train = tokenized_learning_data['tokenized_text']
     y_train = tokenized_learning_data['業界']
 
