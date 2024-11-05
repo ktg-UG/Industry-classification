@@ -18,17 +18,17 @@ def tokenize(text):
 def main():
     #データの読み込み
     import pandas as pd
-    tokenized_learning_data_path = r"C:\Users\ktg27\intern\Industry-classification\tokenized_data\tokenized_train_data.csv"
-    validation_data_path = r"C:\Users\ktg27\intern\Industry-classification\tokenized_data\tokenized_test_data.csv"
+    tokenized_learning_data_path = r"tokenized_data\tokenized_train_data.csv"
+    tokenized_test_data_path = r"tokenized_data\tokenized_test_data.csv"
     tokenized_learning_data = pd.read_csv(tokenized_learning_data_path)
-    validation_data = pd.read_csv(validation_data_path)
+    tokenized_test_data = pd.read_csv(tokenized_test_data_path)
 
     #分割
     x_train = tokenized_learning_data['tokenized_text']
     y_train = tokenized_learning_data['業界']
 
-    x_test = validation_data['tokenized_text']
-    y_test = validation_data['業界']
+    x_test = tokenized_test_data['tokenized_text']
+    y_test = tokenized_test_data['業界']
 
     #テキストのパラメータ化
     from sklearn.feature_extraction.text import TfidfVectorizer
