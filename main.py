@@ -18,14 +18,14 @@ def tokenize(text):
 def main():
     #データの読み込み
     import pandas as pd
-    tokenized_learning_data_path = r"tokenized_data\tokenized_train_data.csv"
+    tokenized_train_data_path = r"tokenized_data\tokenized_train_data.csv"
     tokenized_test_data_path = r"tokenized_data\tokenized_test_data.csv"
-    tokenized_learning_data = pd.read_csv(tokenized_learning_data_path)
+    tokenized_train_data = pd.read_csv(tokenized_train_data_path)
     tokenized_test_data = pd.read_csv(tokenized_test_data_path)
 
     #分割
-    x_train = tokenized_learning_data['tokenized_text']
-    y_train = tokenized_learning_data['業界']
+    x_train = tokenized_train_data['tokenized_text']
+    y_train = tokenized_train_data['業界']
 
     x_test = tokenized_test_data['tokenized_text']
     y_test = tokenized_test_data['業界']
